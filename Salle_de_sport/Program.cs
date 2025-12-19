@@ -36,12 +36,12 @@ namespace SalleSportApp
             try
             {
                 connection.Open();
-                Console.WriteLine("[✓] Connexion établie avec la base de données");
+                Console.WriteLine(" Connexion établie avec la base de données");
                 return true;
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine($"[✗] Erreur de connexion: {ex.Message}");
+                Console.WriteLine($"Erreur de connexion: {ex.Message}");
                 return false;
             }
         }
@@ -52,12 +52,12 @@ namespace SalleSportApp
             try
             {
                 connection.Close();
-                Console.WriteLine("[✓] Connexion fermée");
+                Console.WriteLine(" Connexion fermée");
                 return true;
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine($"[✗] Erreur lors de la fermeture: {ex.Message}");
+                Console.WriteLine($"Erreur lors de la fermeture: {ex.Message}");
                 return false;
             }
         }
@@ -155,7 +155,7 @@ namespace SalleSportApp
                 updateCmd.Parameters.AddWithValue("@id", idMembre);
                 updateCmd.ExecuteNonQuery();
 
-                Console.WriteLine($"[✓] Inscription du membre ID {idMembre} validée");
+                Console.WriteLine($" Inscription du membre ID {idMembre} validée");
             }
             catch (MySqlException ex)
             {
@@ -183,7 +183,7 @@ namespace SalleSportApp
                 int rowsAffected = deleteMemCmd.ExecuteNonQuery();
 
                 if (rowsAffected > 0)
-                    Console.WriteLine($"[✓] Membre ID {idMembre} supprimé");
+                    Console.WriteLine($"  Membre ID {idMembre} supprimé");
                 else
                     Console.WriteLine("Membre non trouvé.");
             }
@@ -254,7 +254,7 @@ namespace SalleSportApp
 
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
-                    Console.WriteLine("[✓] Informations du membre mises à jour");
+                    Console.WriteLine(" Informations du membre mises à jour");
                 else
                     Console.WriteLine("Membre non trouvé.");
             }
@@ -287,7 +287,7 @@ namespace SalleSportApp
                 cmd.Parameters.AddWithValue("@specialite", specialite);
 
                 cmd.ExecuteNonQuery();
-                Console.WriteLine($"[✓] Coach {nom} {prenom} ajouté");
+                Console.WriteLine($" Coach {nom} {prenom} ajouté");
             }
             catch (MySqlException ex)
             {
@@ -355,7 +355,7 @@ namespace SalleSportApp
                 cmd.Parameters.AddWithValue("@capacite", capacite);
 
                 cmd.ExecuteNonQuery();
-                Console.WriteLine($"[✓] Cours '{nom}' ajouté");
+                Console.WriteLine($" Cours '{nom}' ajouté");
             }
             catch (MySqlException ex)
             {
@@ -424,7 +424,7 @@ namespace SalleSportApp
 
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
-                    Console.WriteLine("[✓] Cours modifié");
+                    Console.WriteLine("Cours modifié");
                 else
                     Console.WriteLine("Cours non trouvé.");
             }
@@ -461,7 +461,7 @@ namespace SalleSportApp
                 int rowsAffected = deleteCmd.ExecuteNonQuery();
 
                 if (rowsAffected > 0)
-                    Console.WriteLine($"[✓] Cours ID {idCours} supprimé");
+                    Console.WriteLine($" Cours ID {idCours} supprimé");
                 else
                     Console.WriteLine("Cours non trouvé.");
             }
@@ -542,7 +542,7 @@ namespace SalleSportApp
                 // Vérification 1: Le membre est-il validé?
                 if (!validite)
                 {
-                    Console.WriteLine("[✗] Votre inscription n'a pas encore été validée");
+                    Console.WriteLine("Votre inscription n'a pas encore été validée");
                     return;
                 }
 
@@ -554,7 +554,7 @@ namespace SalleSportApp
 
                 if (capacite == null)
                 {
-                    Console.WriteLine("[✗] Cours non trouvé");
+                    Console.WriteLine("Cours non trouvé");
                     return;
                 }
 
@@ -569,7 +569,7 @@ namespace SalleSportApp
 
                 if (nbInscrits >= (int)capacite)
                 {
-                    Console.WriteLine("[✗] Le cours est complet!");
+                    Console.WriteLine("Le cours est complet!");
                     return;
                 }
 
@@ -584,7 +584,7 @@ namespace SalleSportApp
 
                 if (exist != null)
                 {
-                    Console.WriteLine("[✗] Vous êtes déjà inscrit à ce cours");
+                    Console.WriteLine("Vous êtes déjà inscrit à ce cours");
                     return;
                 }
 
@@ -598,7 +598,7 @@ namespace SalleSportApp
                 insertCmd.Parameters.AddWithValue("@idCours", idCours);
                 insertCmd.ExecuteNonQuery();
 
-                Console.WriteLine("[✓] Inscription au cours réussie!");
+                Console.WriteLine(" Inscription au cours réussie!");
             }
             catch (MySqlException ex)
             {
@@ -710,7 +710,7 @@ namespace SalleSportApp
 
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
-                    Console.WriteLine("[✓] Inscription annulée");
+                    Console.WriteLine(" Inscription annulée");
                 else
                     Console.WriteLine("Inscription non trouvée.");
             }
@@ -814,7 +814,7 @@ namespace SalleSportApp
                 object result = checkCmd.ExecuteScalar();
                 if (result != null)
                 {
-                    Console.WriteLine("[✗] Cet email est déjà utilisé");
+                    Console.WriteLine("Cet email est déjà utilisé");
                     return false;
                 }
 
@@ -835,7 +835,7 @@ namespace SalleSportApp
                 insertCmd.Parameters.AddWithValue("@mdp", mdp);
 
                 insertCmd.ExecuteNonQuery();
-                Console.WriteLine("[✓] Inscription enregistrée. " +
+                Console.WriteLine(" Inscription enregistrée. " +
                     "En attente de validation par un administrateur.");
                 return true;
             }
@@ -915,7 +915,7 @@ namespace SalleSportApp
                         }
                         else
                         {
-                            Console.WriteLine("[✗] Email ou mot de passe incorrect");
+                            Console.WriteLine("Email ou mot de passe incorrect");
                             Console.ReadKey();
                         }
                         break;
@@ -956,7 +956,7 @@ namespace SalleSportApp
                         }
                         else
                         {
-                            Console.WriteLine("[✗] Identifiants incorrects");
+                            Console.WriteLine("Identifiants incorrects");
                             Console.ReadKey();
                         }
                         break;
@@ -966,7 +966,7 @@ namespace SalleSportApp
                         break;
 
                     default:
-                        Console.WriteLine("[✗] Choix invalide");
+                        Console.WriteLine("Choix invalide");
                         Console.ReadKey();
                         break;
                 }
@@ -1131,7 +1131,7 @@ namespace SalleSportApp
                         inAdminMenu = false;
                         break;
                     default:
-                        Console.WriteLine("[✗] Choix invalide");
+                        Console.WriteLine("Choix invalide");
                         Console.ReadKey();
                         break;
                 }
@@ -1183,7 +1183,7 @@ namespace SalleSportApp
                         inMembreMenu = false;
                         break;
                     default:
-                        Console.WriteLine("[✗] Choix invalide");
+                        Console.WriteLine("Choix invalide");
                         Console.ReadKey();
                         break;
                 }
