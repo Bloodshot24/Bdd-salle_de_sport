@@ -20,7 +20,7 @@ namespace SalleSportApp
     {
         // Chaîne de connexion: paramètres de connexion au serveur MySQL
         private string connectionString = 
-            "Server=localhost;Database=salle_sport;Uid=root;Pwd=root;";
+            "Server=127.0.0.1;Database=salle_sport;Uid=root;Pwd=Bloodshot24@;";
         
         private MySqlConnection connection;
 

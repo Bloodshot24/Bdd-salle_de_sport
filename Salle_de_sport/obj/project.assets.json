@@ -594,19 +594,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Bastien\\.nuget\\packages\\": {}
+    "/Users/bas/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\Salle_de_sport.csproj",
+      "projectUniqueName": "/Users/bas/Documents/Bastien/ESILV/A2/BDD/Bdd-salle_de_sport/Salle_de_sport/Salle_de_sport.csproj",
       "projectName": "Salle_de_sport",
-      "projectPath": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\Salle_de_sport.csproj",
-      "packagesPath": "C:\\Users\\Bastien\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\obj\\",
+      "projectPath": "/Users/bas/Documents/Bastien/ESILV/A2/BDD/Bdd-salle_de_sport/Salle_de_sport/Salle_de_sport.csproj",
+      "packagesPath": "/Users/bas/.nuget/packages/",
+      "outputPath": "/Users/bas/Documents/Bastien/ESILV/A2/BDD/Bdd-salle_de_sport/Salle_de_sport/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Bastien\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/bas/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -657,7 +657,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
