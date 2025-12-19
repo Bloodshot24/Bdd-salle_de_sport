@@ -18,16 +18,16 @@ namespace SalleSportApp
     // ========================================================================
     public class DatabaseConnection
     {
-        // Chaîne de connexion: paramètres de connexion au serveur MySQL
-        private string connectionString = 
-            "Server=127.0.0.1;Database=salle_sport;Uid=root;Pwd=Bloodshot24@;";
+        
         
         private MySqlConnection connection;
 
         // Constructeur: initialiser la connexion
-        public DatabaseConnection()
+        public DatabaseConnection(string id,string mdp)
         {
-            connection = new MySqlConnection(connectionString);
+             string connectionString =
+            "Server=127.0.0.1;Database=salle_sport;Uid="+id+";Pwd="+mdp+";";
+        connection = new MySqlConnection(connectionString);
         }
 
         // Méthode: Ouvrir la connexion à la BD
@@ -855,7 +855,22 @@ namespace SalleSportApp
         static void Main(string[] args)
         {
             // Initialisation: Créer la connexion à la base de données
-            DatabaseConnection dbConnection = new DatabaseConnection();
+            Console.Write("Entrez votre identifiant : ");
+            string id = Console.ReadLine() ?? "root";
+            Console.Write("Entrez votre mdp : ");
+            string mdp = "";
+            while (true)
+            {
+                var touche = Console.ReadKey(true);
+                if (touche.Key == ConsoleKey.Enter)
+                    break;
+                mdp += touche.KeyChar;
+                Console.Write("*");
+            }
+            Console.WriteLine();
+
+
+            DatabaseConnection dbConnection = new DatabaseConnection(id, mdp);
 
             if (!dbConnection.OpenConnection())
             {
