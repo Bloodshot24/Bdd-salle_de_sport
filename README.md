@@ -6,7 +6,6 @@ L'application propose trois interfaces distinctes selon le rôle de l'utilisateu
 -ADMINISTRATION
 Gestion des membres : Validation des nouvelles inscriptions, modification des profils et suppression.
 Gestion des coachs : Ajout et affichage des intervenants.
-Gestion des cours : Création, modification et suppression des activités.
 Statistiques : Vue d'ensemble sur le nombre d'adhérents et les cours les plus populaires.
 
 -ESPACE MEMBRE 
