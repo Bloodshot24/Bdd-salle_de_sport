@@ -594,31 +594,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pefer\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Bastien\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pefer\\OneDrive\\Documents\\Esilv\\BDD\\Salle_de_sport\\Salle_de_sport.csproj",
+      "projectUniqueName": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\Salle_de_sport.csproj",
       "projectName": "Salle_de_sport",
-      "projectPath": "C:\\Users\\pefer\\OneDrive\\Documents\\Esilv\\BDD\\Salle_de_sport\\Salle_de_sport.csproj",
-      "packagesPath": "C:\\Users\\pefer\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pefer\\OneDrive\\Documents\\Esilv\\BDD\\Salle_de_sport\\obj\\",
+      "projectPath": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\Salle_de_sport.csproj",
+      "packagesPath": "C:\\Users\\Bastien\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\pefer\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Bastien\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -667,5 +660,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problème de lecture du fichier cache C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
+    }
+  ]
 }
