@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-
 // ============================================================================
 // PROJET: GESTION SALLE DE SPORT - C#
 // ============================================================================
@@ -13,19 +12,19 @@ using MySql.Data.MySqlClient;
 namespace SalleSportApp
 {
     // ========================================================================
-    // CLASSE: DatabaseConnection
+    // CLASSE: Connexion
     // RÔLE: Gérer la connexion à la base de données MySQL
     // ========================================================================
-    public class DatabaseConnection
+    public class Connexion
     {
         // Chaîne de connexion: paramètres de connexion au serveur MySQL
         private string connectionString = 
-            "Server=127.0.0.1;Database=salle_sport;Uid=root;Pwd=Bloodshot24@;";
+            "Server=127.0.0.1;Database=salle_sport;Uid=root;Pwd=root;";
         
         private MySqlConnection connection;
 
         // Constructeur: initialiser la connexion
-        public DatabaseConnection()
+        public Connexion()
         {
             connection = new MySqlConnection(connectionString);
         }
@@ -855,7 +854,7 @@ namespace SalleSportApp
         static void Main(string[] args)
         {
             // Initialisation: Créer la connexion à la base de données
-            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connexion dbConnection = new Connexion();
 
             if (!dbConnection.OpenConnection())
             {
