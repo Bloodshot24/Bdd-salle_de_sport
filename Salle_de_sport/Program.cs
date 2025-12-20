@@ -25,7 +25,7 @@ namespace SalleSportApp
             try
             {
                 connection.Open();
-                Console.WriteLine(" Connexion établie avec la base de données");
+                Console.WriteLine("Connexion établie avec la base de données");
                 return true;
             }
             catch (MySqlException ex)
@@ -41,7 +41,7 @@ namespace SalleSportApp
             try
             {
                 connection.Close();
-                Console.WriteLine(" Connexion fermée");
+                Console.WriteLine("Connexion fermée");
                 return true;
             }
             catch (MySqlException ex)
@@ -51,7 +51,7 @@ namespace SalleSportApp
             }
         }
 
-        // Propriété: Retourner l'objet MySqlConnection pour utilisation
+        //  Obtenir la connexion
         public MySqlConnection GetConnection()
         {
             return connection;
@@ -130,7 +130,7 @@ namespace SalleSportApp
                 updateCmd.Parameters.AddWithValue("@id", idMembre);
                 updateCmd.ExecuteNonQuery();
 
-                Console.WriteLine($" Inscription du membre ID {idMembre} validée");
+                Console.WriteLine($"Inscription du membre ID {idMembre} validée");
             }
             catch (MySqlException ex)
             {
@@ -285,37 +285,6 @@ namespace SalleSportApp
             }
         }
 
-        // ====================================================================
-        // GESTION DES COURS
-        // ====================================================================
-
-        //   Ajouter un nouveau cours
-        /*public void AjouterCours(string nom, string description, decimal duree, 
-                                 int intensite, string difficulte, int capacite)
-        {
-            string query =  "
-                INSERT INTO Cours (Nom_Cours, Description, Duree_h_min, 
-                                   Intensite, Difficulte, Capacite) 
-                VALUES (@nom, @desc, @duree, @intensite, @difficulte, @capacite)";
-
-            try
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@nom", nom);
-                cmd.Parameters.AddWithValue("@desc", description);
-                cmd.Parameters.AddWithValue("@duree", duree);
-                cmd.Parameters.AddWithValue("@intensite", intensite);
-                cmd.Parameters.AddWithValue("@difficulte", difficulte);
-                cmd.Parameters.AddWithValue("@capacite", capacite);
-
-                cmd.ExecuteNonQuery();
-                Console.WriteLine($" Cours '{nom}' ajouté");
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine($"Erreur: {ex.Message}");
-            }
-        }*/
 
         //   Afficher tous les cours
         public void AfficherCours()
@@ -351,75 +320,6 @@ namespace SalleSportApp
                 Console.WriteLine($"Erreur: {ex.Message}");
             }
         }
-        /*
-        //   Modifier un cours
-        public void ModifierCours(int idCours, string nom, string description, 
-                                  decimal duree, int intensite, string difficulte)
-        {
-            string query =  "
-                UPDATE Cours 
-                SET Nom_Cours = @nom, Description = @desc, Duree_h_min = @duree, 
-                    Intensite = @intensite, Difficulte = @difficulte 
-                WHERE ID_Cours = @id";
-
-            try
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@nom", nom);
-                cmd.Parameters.AddWithValue("@desc", description);
-                cmd.Parameters.AddWithValue("@duree", duree);
-                cmd.Parameters.AddWithValue("@intensite", intensite);
-                cmd.Parameters.AddWithValue("@difficulte", difficulte);
-                cmd.Parameters.AddWithValue("@id", idCours);
-
-                int rowsAffected = cmd.ExecuteNonQuery();
-                if (rowsAffected > 0)
-                    Console.WriteLine("Cours modifié");
-                else
-                    Console.WriteLine("Cours non trouvé.");
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine($"Erreur: {ex.Message}");
-            }
-        }
-
-        //   Supprimer un cours
-        public void SupprimerCours(int idCours)
-        {
-            try
-            {
-                // Avant de supprimer le cours, supprimer les inscriptions
-                string deleteInscriptions = 
-                    "DELETE FROM Inscription WHERE ID_Cours = @id";
-                MySqlCommand deleteInsCmd = 
-                    new MySqlCommand(deleteInscriptions, connection);
-                deleteInsCmd.Parameters.AddWithValue("@id", idCours);
-                deleteInsCmd.ExecuteNonQuery();
-
-                // Supprimer du planning
-                string deletePlanning = "DELETE FROM Planning WHERE ID_Cours = @id";
-                MySqlCommand deletePlnCmd = 
-                    new MySqlCommand(deletePlanning, connection);
-                deletePlnCmd.Parameters.AddWithValue("@id", idCours);
-                deletePlnCmd.ExecuteNonQuery();
-
-                // Supprimer le cours
-                string deleteCourse = "DELETE FROM Cours WHERE ID_Cours = @id";
-                MySqlCommand deleteCmd = new MySqlCommand(deleteCourse, connection);
-                deleteCmd.Parameters.AddWithValue("@id", idCours);
-                int rowsAffected = deleteCmd.ExecuteNonQuery();
-
-                if (rowsAffected > 0)
-                    Console.WriteLine($" Cours ID {idCours} supprimé");
-                else
-                    Console.WriteLine("Cours non trouvé.");
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine($"Erreur: {ex.Message}");
-            }
-        }*/
 
         //   Afficher les statistiques (requête avec agrégations)
         public void AfficherStatistiques()
@@ -429,19 +329,19 @@ namespace SalleSportApp
             // Statistique 1: Nombre total de membres
             string requete_membre = "SELECT COUNT(*) FROM Membre";
             MySqlCommand cmdMembers = new MySqlCommand(requete_membre, connection);
-            int totalMembers = (int)cmdMembers.ExecuteScalar();
+            int totalMembers = Convert.ToInt32(cmdMembers.ExecuteScalar() ?? 0);
             Console.WriteLine($"Total de membres: {totalMembers}");
 
             // Statistique 2: Nombre de cours disponibles
             string requete_cours = "SELECT COUNT(*) FROM Cours";
             MySqlCommand cmdCourses = new MySqlCommand(requete_cours, connection);
-            int totalCourses = (int)cmdCourses.ExecuteScalar();
+            int totalCourses = Convert.ToInt32(cmdCourses.ExecuteScalar() ?? 0);
             Console.WriteLine($"Total de cours: {totalCourses}");
 
             // Statistique 3: Nombre de coachs
             string requete_coaches = "SELECT COUNT(*) FROM Coach";
             MySqlCommand cmdCoaches = new MySqlCommand(requete_coaches, connection);
-            int totalCoaches = (int)cmdCoaches.ExecuteScalar();
+            int totalCoaches = Convert.ToInt32(cmdCoaches.ExecuteScalar() ?? 0);
             Console.WriteLine($"Total de coachs: {totalCoaches}");
 
             // Statistique 4: Cours avec le plus d'inscriptions
@@ -752,9 +652,12 @@ namespace SalleSportApp
         static void Main(string[] args)
         {
             // Créer la connexion à la base de données
-            Console.Write("Entrez votre identifiant : ");
+            Console.Clear();
+                Console.WriteLine("╔══════════════ MENU CONNEXION ═════════════╗");
+                Console.WriteLine("║ Entrez votre identifiant                  ║");
+                Console.WriteLine("║ Entrez votre mot de passe                 ║");
+                Console.WriteLine("╚═══════════════════════════════════════════╝");
             string id = Console.ReadLine() ?? "root";
-            Console.Write("Entrez votre mdp : ");
             string mdp = "";
             while (true)
             {
