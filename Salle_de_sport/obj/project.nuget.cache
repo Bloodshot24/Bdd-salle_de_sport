@@ -18,5 +18,15 @@
     "C:\\Users\\Bastien\\.nuget\\packages\\system.windows.extensions\\8.0.0\\system.windows.extensions.8.0.0.nupkg.sha512",
     "C:\\Users\\Bastien\\.nuget\\packages\\zstdsharp.port\\0.8.6\\zstdsharp.port.0.8.6.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problème de lecture du fichier cache C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\obj\\project.nuget.cache\u00A0: '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\Salle_de_sport.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\Bastien\\Documents\\Bastien\\ESILV\\aé\\BDD\\Bdd-salle_de_sport\\Salle_de_sport\\Salle_de_sport.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

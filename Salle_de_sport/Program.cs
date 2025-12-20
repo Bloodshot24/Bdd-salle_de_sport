@@ -1,62 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-// ============================================================================
-// PROJET: GESTION SALLE DE SPORT - C#
-// ============================================================================
-// Ce programme gère l'interface de connexion et navigation pour une salle 
-// de sport avec trois rôles: Administrateur, Coach et Membre
-// ============================================================================
 
 
 namespace SalleSportApp
 {
-    // ========================================================================
-    // CLASSE: Connexion
-    // RÔLE: Gérer la connexion à la base de données MySQL
-    // ========================================================================
     public class Connexion
     {
-        // Chaîne de connexion: paramètres de connexion au serveur MySQL
-        private string connectionString = 
-            "Server=127.0.0.1;Database=salle_sport;Uid=root;Pwd=root;";
+        
         
         private MySqlConnection connection;
 
         // Constructeur: initialiser la connexion
-        public Connexion()
+        public Connexion(string id,string mdp)
         {
-            connection = new MySqlConnection(connectionString);
+             string connectionString =
+            "Server=127.0.0.1;Database=salle_sport;Uid="+id+";Pwd="+mdp+";";
+        connection = new MySqlConnection(connectionString);
         }
 
-        // Méthode: Ouvrir la connexion à la BD
+        //   Ouvrir la connexion à la BD
         public bool OpenConnection()
         {
             try
             {
                 connection.Open();
-                Console.WriteLine("[✓] Connexion établie avec la base de données");
+                Console.WriteLine(" Connexion établie avec la base de données");
                 return true;
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine($"[✗] Erreur de connexion: {ex.Message}");
+                Console.WriteLine($"Erreur de connexion: {ex.Message}");
                 return false;
             }
         }
 
-        // Méthode: Fermer la connexion
+        //   Fermer la connexion
         public bool CloseConnection()
         {
             try
             {
                 connection.Close();
-                Console.WriteLine("[✓] Connexion fermée");
+                Console.WriteLine(" Connexion fermée");
                 return true;
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine($"[✗] Erreur lors de la fermeture: {ex.Message}");
+                Console.WriteLine($"Erreur lors de la fermeture: {ex.Message}");
                 return false;
             }
         }
@@ -68,10 +58,6 @@ namespace SalleSportApp
         }
     }
 
-    // ========================================================================
-    // CLASSE: Admin
-    // RÔLE: Gérer les opérations de l'administrateur
-    // ========================================================================
     public class Admin
     {
         private int idAdmin;
@@ -79,7 +65,7 @@ namespace SalleSportApp
         private int niveauPrivilege;
         private MySqlConnection connection;
 
-        // Constructeur: initialiser l'administrateur
+        // initialiser l'administrateur
         public Admin(int id, string nom, int privilege, MySqlConnection conn)
         {
             idAdmin = id;
@@ -88,24 +74,16 @@ namespace SalleSportApp
             connection = conn;
         }
 
-        // ====================================================================
-        // GESTION DES MEMBRES
-        // ====================================================================
-
-        // Méthode: Afficher les demandes d'inscription en attente
+       
         public void AfficherInscriptionsEnAttente()
         {
             Console.WriteLine("\n--- DEMANDES D'INSCRIPTION EN ATTENTE ---");
             
-            string query = @"
-                SELECT ID_Membre, Nom, Prenom, Mail, Date_Inscription 
-                FROM Membre 
-                WHERE Validite_Inscription = FALSE
-                ORDER BY Date_Inscription ASC";
+            string requete = "SELECT ID_Membre, Nom, Prenom, Mail, Date_Inscription FROM Membre WHERE Validite_Inscription = FALSEORDER BY Date_Inscription ASC";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 if (!reader.HasRows)
@@ -130,31 +108,29 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Valider une inscription de membre
         public void ValiderInscription(int idMembre)
         {
-            // Vérification: Le membre existe-t-il?
-            string checkQuery = "SELECT Validite_Inscription FROM Membre WHERE ID_Membre = @id";
-            MySqlCommand checkCmd = new MySqlCommand(checkQuery, connection);
+            // Vérification
+            string test = "SELECT Validite_Inscription FROM Membre WHERE ID_Membre = @id";
+            MySqlCommand checkCmd = new MySqlCommand(test, connection);
             checkCmd.Parameters.AddWithValue("@id", idMembre);
 
             try
             {
-                object result = checkCmd.ExecuteScalar();
-                if (result == null)
+                object resultat = checkCmd.ExecuteScalar();
+                if (resultat == null)
                 {
                     Console.WriteLine("Membre non trouvé.");
                     return;
                 }
 
                 // Mise à jour: Passer Validite_Inscription à TRUE
-                string updateQuery = 
-                    "UPDATE Membre SET Validite_Inscription = TRUE WHERE ID_Membre = @id";
-                MySqlCommand updateCmd = new MySqlCommand(updateQuery, connection);
+                string maj_requete = "UPDATE Membre SET Validite_Inscription = TRUE WHERE ID_Membre = @id";
+                MySqlCommand updateCmd = new MySqlCommand(maj_requete, connection);
                 updateCmd.Parameters.AddWithValue("@id", idMembre);
                 updateCmd.ExecuteNonQuery();
 
-                Console.WriteLine($"[✓] Inscription du membre ID {idMembre} validée");
+                Console.WriteLine($" Inscription du membre ID {idMembre} validée");
             }
             catch (MySqlException ex)
             {
@@ -162,7 +138,7 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Supprimer une adhésion (membre)
+        // Supprimer une adhésion (membre)
         public void SupprimerMembre(int idMembre)
         {
             try
@@ -182,7 +158,7 @@ namespace SalleSportApp
                 int rowsAffected = deleteMemCmd.ExecuteNonQuery();
 
                 if (rowsAffected > 0)
-                    Console.WriteLine($"[✓] Membre ID {idMembre} supprimé");
+                    Console.WriteLine($"  Membre ID {idMembre} supprimé");
                 else
                     Console.WriteLine("Membre non trouvé.");
             }
@@ -192,18 +168,14 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Afficher les informations d'un membre
+        // Afficher les informations d'un membre
         public void AfficherInfoMembre(int idMembre)
         {
-            string query = @"
-                SELECT ID_Membre, Nom, Prenom, Adresse, Tel, Mail, 
-                       Date_Inscription, Validite_Inscription 
-                FROM Membre 
-                WHERE ID_Membre = @id";
+            string requete = "SELECT ID_Membre, Nom, Prenom, Adresse, Tel, Mail, Date_Inscription, Validite_Inscription FROM Membre WHERE ID_Membre = @id";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@id", idMembre);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -231,19 +203,13 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Modifier les informations d'un membre
-        public void ModifierMembre(int idMembre, string nom, string prenom, 
-                                   string adresse, string tel, string mail)
+        // Modifier les informations d'un membre
+        public void ModifierMembre(int idMembre, string nom, string prenom,string adresse, string tel, string mail)
         {
-            string query = @"
-                UPDATE Membre 
-                SET Nom = @nom, Prenom = @prenom, Adresse = @adresse, 
-                    Tel = @tel, Mail = @mail 
-                WHERE ID_Membre = @id";
-
+            string requete = "UPDATE Membre SET Nom = @nom, Prenom = @prenom, Adresse = @adresse, Tel = @tel, Mail = @mail WHERE ID_Membre = @id";
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@nom", nom);
                 cmd.Parameters.AddWithValue("@prenom", prenom);
                 cmd.Parameters.AddWithValue("@adresse", adresse);
@@ -253,7 +219,7 @@ namespace SalleSportApp
 
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
-                    Console.WriteLine("[✓] Informations du membre mises à jour");
+                    Console.WriteLine(" Informations du membre mises à jour");
                 else
                     Console.WriteLine("Membre non trouvé.");
             }
@@ -262,22 +228,14 @@ namespace SalleSportApp
                 Console.WriteLine($"Erreur: {ex.Message}");
             }
         }
-
-        // ====================================================================
-        // GESTION DES COACHS
-        // ====================================================================
-
-        // Méthode: Ajouter un nouveau coach
-        public void AjouterCoach(string nom, string prenom, string tel, 
-                                 string mdp, string formation, string specialite)
+        // Ajouter un nouveau coach
+        public void AjouterCoach(string nom, string prenom, string tel,string mdp, string formation, string specialite)
         {
-            string query = @"
-                INSERT INTO Coach (Nom, Prenom, Tel, MDP, Formation, Specialite) 
-                VALUES (@nom, @prenom, @tel, @mdp, @formation, @specialite)";
-
+            string requete = "INSERT INTO Coach (Nom, Prenom, Tel, MDP, Formation, Specialite) VALUES (@nom, @prenom, @tel, @mdp, @formation, @specialite)";
+        
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@nom", nom);
                 cmd.Parameters.AddWithValue("@prenom", prenom);
                 cmd.Parameters.AddWithValue("@tel", tel);
@@ -286,7 +244,7 @@ namespace SalleSportApp
                 cmd.Parameters.AddWithValue("@specialite", specialite);
 
                 cmd.ExecuteNonQuery();
-                Console.WriteLine($"[✓] Coach {nom} {prenom} ajouté");
+                Console.WriteLine($" Coach {nom} {prenom} ajouté");
             }
             catch (MySqlException ex)
             {
@@ -294,18 +252,15 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Afficher tous les coachs
+        // Afficher tous les coachs
         public void AfficherCoachs()
         {
             Console.WriteLine("\n--- LISTE DES COACHS ---");
-            string query = @"
-                SELECT ID_Coach, Nom, Prenom, Tel, Formation, Specialite 
-                FROM Coach 
-                ORDER BY Nom ASC";
+            string requete = "SELECT ID_Coach, Nom, Prenom, Tel, Formation, Specialite FROM Coach ORDER BY Nom ASC";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 if (!reader.HasRows)
@@ -334,11 +289,11 @@ namespace SalleSportApp
         // GESTION DES COURS
         // ====================================================================
 
-        // Méthode: Ajouter un nouveau cours
-        public void AjouterCours(string nom, string description, decimal duree, 
+        //   Ajouter un nouveau cours
+        /*public void AjouterCours(string nom, string description, decimal duree, 
                                  int intensite, string difficulte, int capacite)
         {
-            string query = @"
+            string query =  "
                 INSERT INTO Cours (Nom_Cours, Description, Duree_h_min, 
                                    Intensite, Difficulte, Capacite) 
                 VALUES (@nom, @desc, @duree, @intensite, @difficulte, @capacite)";
@@ -354,27 +309,23 @@ namespace SalleSportApp
                 cmd.Parameters.AddWithValue("@capacite", capacite);
 
                 cmd.ExecuteNonQuery();
-                Console.WriteLine($"[✓] Cours '{nom}' ajouté");
+                Console.WriteLine($" Cours '{nom}' ajouté");
             }
             catch (MySqlException ex)
             {
                 Console.WriteLine($"Erreur: {ex.Message}");
             }
-        }
+        }*/
 
-        // Méthode: Afficher tous les cours
+        //   Afficher tous les cours
         public void AfficherCours()
         {
             Console.WriteLine("\n--- LISTE DES COURS ---");
-            string query = @"
-                SELECT ID_Cours, Nom_Cours, Description, Duree_h_min, 
-                       Intensite, Difficulte, Capacite 
-                FROM Cours 
-                ORDER BY Nom_Cours ASC";
+            string requete =  "SELECT ID_Cours, Nom_Cours, Description, Duree_h_min, Intensite, Difficulte, Capacite FROM Cours ORDER BY Nom_Cours ASC";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 if (!reader.HasRows)
@@ -400,12 +351,12 @@ namespace SalleSportApp
                 Console.WriteLine($"Erreur: {ex.Message}");
             }
         }
-
-        // Méthode: Modifier un cours
+        /*
+        //   Modifier un cours
         public void ModifierCours(int idCours, string nom, string description, 
                                   decimal duree, int intensite, string difficulte)
         {
-            string query = @"
+            string query =  "
                 UPDATE Cours 
                 SET Nom_Cours = @nom, Description = @desc, Duree_h_min = @duree, 
                     Intensite = @intensite, Difficulte = @difficulte 
@@ -423,7 +374,7 @@ namespace SalleSportApp
 
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
-                    Console.WriteLine("[✓] Cours modifié");
+                    Console.WriteLine("Cours modifié");
                 else
                     Console.WriteLine("Cours non trouvé.");
             }
@@ -433,7 +384,7 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Supprimer un cours
+        //   Supprimer un cours
         public void SupprimerCours(int idCours)
         {
             try
@@ -460,7 +411,7 @@ namespace SalleSportApp
                 int rowsAffected = deleteCmd.ExecuteNonQuery();
 
                 if (rowsAffected > 0)
-                    Console.WriteLine($"[✓] Cours ID {idCours} supprimé");
+                    Console.WriteLine($" Cours ID {idCours} supprimé");
                 else
                     Console.WriteLine("Cours non trouvé.");
             }
@@ -468,41 +419,35 @@ namespace SalleSportApp
             {
                 Console.WriteLine($"Erreur: {ex.Message}");
             }
-        }
+        }*/
 
-        // Méthode: Afficher les statistiques (requête avec agrégations)
+        //   Afficher les statistiques (requête avec agrégations)
         public void AfficherStatistiques()
         {
             Console.WriteLine("\n--- STATISTIQUES DE LA SALLE ---");
 
             // Statistique 1: Nombre total de membres
-            string queryMembers = "SELECT COUNT(*) FROM Membre";
-            MySqlCommand cmdMembers = new MySqlCommand(queryMembers, connection);
+            string requete_membre = "SELECT COUNT(*) FROM Membre";
+            MySqlCommand cmdMembers = new MySqlCommand(requete_membre, connection);
             int totalMembers = (int)cmdMembers.ExecuteScalar();
             Console.WriteLine($"Total de membres: {totalMembers}");
 
             // Statistique 2: Nombre de cours disponibles
-            string queryCourses = "SELECT COUNT(*) FROM Cours";
-            MySqlCommand cmdCourses = new MySqlCommand(queryCourses, connection);
+            string requete_cours = "SELECT COUNT(*) FROM Cours";
+            MySqlCommand cmdCourses = new MySqlCommand(requete_cours, connection);
             int totalCourses = (int)cmdCourses.ExecuteScalar();
             Console.WriteLine($"Total de cours: {totalCourses}");
 
             // Statistique 3: Nombre de coachs
-            string queryCoaches = "SELECT COUNT(*) FROM Coach";
-            MySqlCommand cmdCoaches = new MySqlCommand(queryCoaches, connection);
+            string requete_coaches = "SELECT COUNT(*) FROM Coach";
+            MySqlCommand cmdCoaches = new MySqlCommand(requete_coaches, connection);
             int totalCoaches = (int)cmdCoaches.ExecuteScalar();
             Console.WriteLine($"Total de coachs: {totalCoaches}");
 
             // Statistique 4: Cours avec le plus d'inscriptions
-            string queryPopular = @"
-                SELECT c.Nom_Cours, COUNT(i.ID_Membre) as NbInscrits
-                FROM Cours c
-                LEFT JOIN Inscription i ON c.ID_Cours = i.ID_Cours
-                GROUP BY c.ID_Cours, c.Nom_Cours
-                ORDER BY NbInscrits DESC
-                LIMIT 1";
+            string requete_nombre_inscriptions =  "SELECT c.Nom_Cours, COUNT(i.ID_Membre) as NbInscrits FROM Cours c LEFT JOIN Inscription i ON c.ID_Cours = i.ID_Cours GROUP BY c.ID_Cours, c.Nom_Cours ORDER BY NbInscrits DESC LIMIT 1";
             
-            MySqlCommand cmdPopular = new MySqlCommand(queryPopular, connection);
+            MySqlCommand cmdPopular = new MySqlCommand(requete_nombre_inscriptions, connection);
             MySqlDataReader readerPopular = cmdPopular.ExecuteReader();
             if (readerPopular.Read())
             {
@@ -514,10 +459,6 @@ namespace SalleSportApp
         }
     }
 
-    // ========================================================================
-    // CLASSE: Membre
-    // RÔLE: Gérer les opérations des membres
-    // ========================================================================
     public class Membre
     {
         private int idMembre;
@@ -533,19 +474,19 @@ namespace SalleSportApp
             connection = conn;
         }
 
-        // Méthode: S'inscrire à un cours (réservation)
+        // S'inscrire à un cours (réservation)
         public void InscrireACours(int idCours)
         {
             try
             {
-                // Vérification 1: Le membre est-il validé?
+                // Vérification
                 if (!validite)
                 {
-                    Console.WriteLine("[✗] Votre inscription n'a pas encore été validée");
+                    Console.WriteLine("Votre inscription n'a pas encore été validée");
                     return;
                 }
 
-                // Vérification 2: Le cours existe-t-il?
+                // Vérification
                 string checkCourse = "SELECT Capacite FROM Cours WHERE ID_Cours = @idCours";
                 MySqlCommand checkCmd = new MySqlCommand(checkCourse, connection);
                 checkCmd.Parameters.AddWithValue("@idCours", idCours);
@@ -553,29 +494,23 @@ namespace SalleSportApp
 
                 if (capacite == null)
                 {
-                    Console.WriteLine("[✗] Cours non trouvé");
+                    Console.WriteLine("Cours non trouvé");
                     return;
                 }
 
                 // Vérification 3: Y a-t-il de la place dans le cours?
-                string countInscriptions = @"
-                    SELECT COUNT(*) FROM Inscription 
-                    WHERE ID_Cours = @idCours";
-                MySqlCommand countCmd = 
-                    new MySqlCommand(countInscriptions, connection);
+                string countInscriptions =  "SELECT COUNT(*) FROM Inscription WHERE ID_Cours = @idCours";
+                MySqlCommand countCmd = new MySqlCommand(countInscriptions, connection);
                 countCmd.Parameters.AddWithValue("@idCours", idCours);
-                int nbInscrits = (int)countCmd.ExecuteScalar();
-
-                if (nbInscrits >= (int)capacite)
+                int nbInscrits = Convert.ToInt32(countCmd.ExecuteScalar() ?? 0);
+                if (nbInscrits >= Convert.ToInt32(capacite))
                 {
-                    Console.WriteLine("[✗] Le cours est complet!");
+                    Console.WriteLine("Le cours est complet!");
                     return;
                 }
 
                 // Vérification 4: N'est-il pas déjà inscrit?
-                string checkExist = @"
-                    SELECT ID_Membre FROM Inscription 
-                    WHERE ID_Membre = @idMembre AND ID_Cours = @idCours";
+                string checkExist =  "SELECT ID_Membre FROM Inscription WHERE ID_Membre = @idMembre AND ID_Cours = @idCours";
                 MySqlCommand existCmd = new MySqlCommand(checkExist, connection);
                 existCmd.Parameters.AddWithValue("@idMembre", idMembre);
                 existCmd.Parameters.AddWithValue("@idCours", idCours);
@@ -583,21 +518,18 @@ namespace SalleSportApp
 
                 if (exist != null)
                 {
-                    Console.WriteLine("[✗] Vous êtes déjà inscrit à ce cours");
+                    Console.WriteLine("Vous êtes déjà inscrit à ce cours");
                     return;
                 }
 
                 // Insertion: Ajouter l'inscription
-                string insertQuery = @"
-                    INSERT INTO Inscription (ID_Membre, ID_Cours, Date_Inscription) 
-                    VALUES (@idMembre, @idCours, NOW())";
-                MySqlCommand insertCmd = 
-                    new MySqlCommand(insertQuery, connection);
+                string requete =  "INSERT INTO Inscription (ID_Membre, ID_Cours, Date_Inscription) VALUES (@idMembre, @idCours, NOW())";
+                MySqlCommand insertCmd = new MySqlCommand(requete, connection);
                 insertCmd.Parameters.AddWithValue("@idMembre", idMembre);
                 insertCmd.Parameters.AddWithValue("@idCours", idCours);
                 insertCmd.ExecuteNonQuery();
 
-                Console.WriteLine("[✓] Inscription au cours réussie!");
+                Console.WriteLine("Inscription au cours réussie!");
             }
             catch (MySqlException ex)
             {
@@ -605,22 +537,15 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Voir les cours disponibles
+        // Voir les cours disponibles
         public void AfficherCoursDisponibles()
         {
             Console.WriteLine("\n--- COURS DISPONIBLES ---");
-            string query = @"
-                SELECT c.ID_Cours, c.Nom_Cours, c.Description, c.Duree_h_min, 
-                       c.Intensite, c.Difficulte, c.Capacite,
-                       COUNT(i.ID_Membre) as NbInscrits
-                FROM Cours c
-                LEFT JOIN Inscription i ON c.ID_Cours = i.ID_Cours
-                GROUP BY c.ID_Cours
-                ORDER BY c.Nom_Cours ASC";
+            string requete =  "SELECT c.ID_Cours, c.Nom_Cours, c.Description, c.Duree_h_min, c.Intensite, c.Difficulte, c.Capacite, COUNT(i.ID_Membre) as NbInscrits FROM Cours c LEFT JOIN Inscription i ON c.ID_Cours = i.ID_Cours GROUP BY c.ID_Cours ORDER BY c.Nom_Cours ASC";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 if (!reader.HasRows)
@@ -652,21 +577,15 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Voir mes inscriptions
+        //   Voir mes inscriptions
         public void AfficherMesInscriptions()
         {
             Console.WriteLine("\n--- MES INSCRIPTIONS ---");
-            string query = @"
-                SELECT c.Nom_Cours, c.Description, c.Duree_h_min, 
-                       c.Difficulte, i.Date_Inscription
-                FROM Inscription i
-                JOIN Cours c ON i.ID_Cours = c.ID_Cours
-                WHERE i.ID_Membre = @idMembre
-                ORDER BY i.Date_Inscription DESC";
+            string requete =  "SELECT c.Nom_Cours, c.Description, c.Duree_h_min, c.Difficulte, i.Date_Inscription FROM Inscription i JOIN Cours c ON i.ID_Cours = c.ID_Cours WHERE i.ID_Membre = @idMembre ORDER BY i.Date_Inscription DESC";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@idMembre", idMembre);
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -694,22 +613,20 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Annuler une inscription
+        // Annuler une inscription
         public void AnnulerInscription(int idCours)
         {
-            string query = @"
-                DELETE FROM Inscription 
-                WHERE ID_Membre = @idMembre AND ID_Cours = @idCours";
+            string requete =  "DELETE FROM Inscription WHERE ID_Membre = @idMembre AND ID_Cours = @idCours";
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@idMembre", idMembre);
                 cmd.Parameters.AddWithValue("@idCours", idCours);
 
                 int rowsAffected = cmd.ExecuteNonQuery();
                 if (rowsAffected > 0)
-                    Console.WriteLine("[✓] Inscription annulée");
+                    Console.WriteLine(" Inscription annulée");
                 else
                     Console.WriteLine("Inscription non trouvée.");
             }
@@ -720,10 +637,7 @@ namespace SalleSportApp
         }
     }
 
-    // ========================================================================
-    // CLASSE: Authentification
-    // RÔLE: Gérer l'authentification des utilisateurs
-    // ========================================================================
+  
     public class Authentification
     {
         private MySqlConnection connection;
@@ -733,17 +647,14 @@ namespace SalleSportApp
             connection = conn;
         }
 
-        // Méthode: Authentifier un administrateur
+        // Authentifier un administrateur
         public Admin AuthifierAdmin(string identifiant, string mdp)
         {
-            string query = @"
-                SELECT ID_Admin, CONCAT(Nom, ' ', Prenom), Nv_Privilege 
-                FROM Admin 
-                WHERE CONCAT(Nom, ' ', Prenom) = @id AND MDP = @mdp";
-
+            string requete =  "SELECT ID_Admin, CONCAT(Nom, ' ', Prenom), Nv_Privilege FROM Admin WHERE CONCAT(Nom, ' ', Prenom) = @id AND MDP = @mdp";   
+        
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@id", identifiant);
                 cmd.Parameters.AddWithValue("@mdp", mdp);
 
@@ -766,17 +677,14 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Authentifier un membre
+        //   Authentifier un membre
         public Membre AuthentifierMembre(string mail, string mdp)
         {
-            string query = @"
-                SELECT ID_Membre, CONCAT(Nom, ' ', Prenom), Validite_Inscription 
-                FROM Membre 
-                WHERE Mail = @mail AND MDP = @mdp";
-
+            string requete =  "SELECT ID_Membre, CONCAT(Nom, ' ', Prenom), Validite_Inscription FROM Membre WHERE Mail = @mail AND MDP = @mdp";
+    
             try
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(requete, connection);
                 cmd.Parameters.AddWithValue("@mail", mail);
                 cmd.Parameters.AddWithValue("@mdp", mdp);
 
@@ -799,33 +707,26 @@ namespace SalleSportApp
             }
         }
 
-        // Méthode: Inscrire un nouveau membre
-        public bool InscrireNouveauMembre(string nom, string prenom, string adresse, 
-                                          string tel, string mail, string mdp)
+        //   Inscrire un nouveau membre
+        public bool InscrireNouveauMembre(string nom, string prenom, string adresse, string tel, string mail, string mdp)
         {
-            // Vérification: L'email est-il déjà utilisé?
-            string checkQuery = "SELECT Mail FROM Membre WHERE Mail = @mail";
-            MySqlCommand checkCmd = new MySqlCommand(checkQuery, connection);
+            string test = "SELECT Mail FROM Membre WHERE Mail = @mail";
+            MySqlCommand checkCmd = new MySqlCommand(test, connection);
             checkCmd.Parameters.AddWithValue("@mail", mail);
 
             try
             {
-                object result = checkCmd.ExecuteScalar();
-                if (result != null)
+                object resultat = checkCmd.ExecuteScalar();
+                if (resultat != null)
                 {
-                    Console.WriteLine("[✗] Cet email est déjà utilisé");
+                    Console.WriteLine("Cet email est déjà utilisé");
                     return false;
                 }
 
                 // Insertion: Ajouter le nouveau membre
-                string insertQuery = @"
-                    INSERT INTO Membre 
-                    (Nom, Prenom, Adresse, Tel, Mail, Date_Inscription, 
-                     Validite_Inscription, MDP, ID_Admin) 
-                    VALUES (@nom, @prenom, @adresse, @tel, @mail, NOW(), 
-                            FALSE, @mdp, NULL)";
+                string requete =  "INSERT INTO Membre (Nom, Prenom, Adresse, Tel, Mail, Date_Inscription, Validite_Inscription, MDP, ID_Admin)VALUES (@nom, @prenom, @adresse, @tel, @mail, NOW(),FALSE, @mdp, NULL)";
 
-                MySqlCommand insertCmd = new MySqlCommand(insertQuery, connection);
+                MySqlCommand insertCmd = new MySqlCommand(requete, connection);
                 insertCmd.Parameters.AddWithValue("@nom", nom);
                 insertCmd.Parameters.AddWithValue("@prenom", prenom);
                 insertCmd.Parameters.AddWithValue("@adresse", adresse);
@@ -834,7 +735,7 @@ namespace SalleSportApp
                 insertCmd.Parameters.AddWithValue("@mdp", mdp);
 
                 insertCmd.ExecuteNonQuery();
-                Console.WriteLine("[✓] Inscription enregistrée. " +
+                Console.WriteLine(" Inscription enregistrée. " +
                     "En attente de validation par un administrateur.");
                 return true;
             }
@@ -846,15 +747,27 @@ namespace SalleSportApp
         }
     }
 
-    // ========================================================================
-    // CLASSE: Program - Point d'entrée de l'application
-    // ========================================================================
     class Program
     {
         static void Main(string[] args)
         {
-            // Initialisation: Créer la connexion à la base de données
-            Connexion dbConnection = new Connexion();
+            // Créer la connexion à la base de données
+            Console.Write("Entrez votre identifiant : ");
+            string id = Console.ReadLine() ?? "root";
+            Console.Write("Entrez votre mdp : ");
+            string mdp = "";
+            while (true)
+            {
+                var touche = Console.ReadKey(true);
+                if (touche.Key == ConsoleKey.Enter)
+                    break;
+                mdp += touche.KeyChar;
+                Console.Write("*");
+            }
+            Console.WriteLine();
+
+
+            Connexion dbConnection = new Connexion(id, mdp);
 
             if (!dbConnection.OpenConnection())
             {
@@ -862,7 +775,7 @@ namespace SalleSportApp
                 return;
             }
 
-            // Menu principal: Navigation de l'application
+            // Navigation de l'application
             bool isRunning = true;
             MySqlConnection connection = dbConnection.GetConnection();
 
@@ -899,7 +812,7 @@ namespace SalleSportApp
                         }
                         else
                         {
-                            Console.WriteLine("[✗] Email ou mot de passe incorrect");
+                            Console.WriteLine("Email ou mot de passe incorrect");
                             Console.ReadKey();
                         }
                         break;
@@ -940,7 +853,7 @@ namespace SalleSportApp
                         }
                         else
                         {
-                            Console.WriteLine("[✗] Identifiants incorrects");
+                            Console.WriteLine("Identifiants incorrects");
                             Console.ReadKey();
                         }
                         break;
@@ -950,18 +863,18 @@ namespace SalleSportApp
                         break;
 
                     default:
-                        Console.WriteLine("[✗] Choix invalide");
+                        Console.WriteLine("Choix invalide");
                         Console.ReadKey();
                         break;
                 }
             }
 
-            // Fermeture: Fermer la connexion
+            // Fermer la connexion
             dbConnection.CloseConnection();
             Console.WriteLine("Au revoir!");
         }
 
-        // Méthode: Menu pour les administrateurs
+        //   Menu pour les administrateurs
         static void MenuAdmin(Admin admin)
         {
             bool inAdminMenu = true;
@@ -978,11 +891,8 @@ namespace SalleSportApp
                 Console.WriteLine("5- Modifier un membre");
                 Console.WriteLine("6- Ajouter un coach");
                 Console.WriteLine("7- Afficher tous les coachs");
-                Console.WriteLine("8- Ajouter un cours");
-                Console.WriteLine("9- Afficher tous les cours");
-                Console.WriteLine("10- Modifier un cours");
-                Console.WriteLine("11- Supprimer un cours");
-                Console.WriteLine("12- Afficher statistiques");
+                Console.WriteLine("8- Afficher tous les cours");
+                Console.WriteLine("9- Afficher statistiques");
                 Console.WriteLine("0- Déconnexion");
                 Console.WriteLine("====================================");
 
@@ -1053,61 +963,10 @@ namespace SalleSportApp
                         Console.ReadKey();
                         break;
                     case "8":
-                        Console.Write("Nom du cours: ");
-                        string nomCours = Console.ReadLine();
-                        Console.Write("Description: ");
-                        string descCours = Console.ReadLine();
-                        Console.Write("Durée (en heures): ");
-                        if (decimal.TryParse(Console.ReadLine(), out decimal dureeCours))
-                        {
-                            Console.Write("Intensité (1-5): ");
-                            if (int.TryParse(Console.ReadLine(), out int intensiteCours))
-                            {
-                                Console.Write("Difficulté (Facile/Moyen/Difficile): ");
-                                string difficulteCours = Console.ReadLine();
-                                Console.Write("Capacité: ");
-                                if (int.TryParse(Console.ReadLine(), out int capaciteCours))
-                                    admin.AjouterCours(nomCours, descCours, dureeCours, 
-                                                     intensiteCours, difficulteCours, capaciteCours);
-                            }
-                        }
-                        Console.ReadKey();
-                        break;
-                    case "9":
                         admin.AfficherCours();
                         Console.ReadKey();
                         break;
-                    case "10":
-                        Console.Write("ID du cours à modifier: ");
-                        if (int.TryParse(Console.ReadLine(), out int idCoursMod))
-                        {
-                            Console.Write("Nouveau nom: ");
-                            string nomCoursMod = Console.ReadLine();
-                            Console.Write("Nouvelle description: ");
-                            string descCoursMod = Console.ReadLine();
-                            Console.Write("Nouvelle durée: ");
-                            if (decimal.TryParse(Console.ReadLine(), out decimal dureeCoursMod))
-                            {
-                                Console.Write("Nouvelle intensité: ");
-                                if (int.TryParse(Console.ReadLine(), out int intensiteCoursMod))
-                                {
-                                    Console.Write("Nouvelle difficulté: ");
-                                    string difficulteCoursMod = Console.ReadLine();
-                                    admin.ModifierCours(idCoursMod, nomCoursMod, 
-                                                       descCoursMod, dureeCoursMod, 
-                                                       intensiteCoursMod, difficulteCoursMod);
-                                }
-                            }
-                        }
-                        Console.ReadKey();
-                        break;
-                    case "11":
-                        Console.Write("ID du cours à supprimer: ");
-                        if (int.TryParse(Console.ReadLine(), out int idCoursSup))
-                            admin.SupprimerCours(idCoursSup);
-                        Console.ReadKey();
-                        break;
-                    case "12":
+                    case "9":
                         admin.AfficherStatistiques();
                         Console.ReadKey();
                         break;
@@ -1115,14 +974,14 @@ namespace SalleSportApp
                         inAdminMenu = false;
                         break;
                     default:
-                        Console.WriteLine("[✗] Choix invalide");
+                        Console.WriteLine("Choix invalide");
                         Console.ReadKey();
                         break;
                 }
             }
         }
 
-        // Méthode: Menu pour les membres
+        //   Menu pour les membres
         static void MenuMembre(Membre membre)
         {
             bool inMembreMenu = true;
@@ -1167,7 +1026,7 @@ namespace SalleSportApp
                         inMembreMenu = false;
                         break;
                     default:
-                        Console.WriteLine("[✗] Choix invalide");
+                        Console.WriteLine("Choix invalide");
                         Console.ReadKey();
                         break;
                 }
